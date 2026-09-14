@@ -1,0 +1,153 @@
+paths:
+  /users/:id:
+    get:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                  email:
+                    type: string
+                    format: email
+                    example: ada@example.com
+                  name:
+                    type: string
+                    example: Ada Lovelace
+                required:
+                  - id
+                  - email
+                  - name
+                additionalProperties: false
+                example:
+                  id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                  email: ada@example.com
+                  name: Ada Lovelace
+  /users:
+    get:
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 20
+        - name: offset
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          example: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                        email:
+                          type: string
+                          format: email
+                          example: ada@example.com
+                        name:
+                          type: string
+                          example: Ada Lovelace
+                      required:
+                        - id
+                        - email
+                        - name
+                      additionalProperties: false
+                      example:
+                        id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                        email: ada@example.com
+                        name: Ada Lovelace
+                    example:
+                      - id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                        email: ada@example.com
+                        name: Ada Lovelace
+                  total:
+                    type: integer
+                    example: 0
+                required:
+                  - items
+                  - total
+                additionalProperties: false
+                example:
+                  items:
+                    - id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                      email: ada@example.com
+                      name: Ada Lovelace
+                  total: 0
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: string
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 120
+                  example: string
+              required:
+                - email
+                - name
+              additionalProperties: false
+              example:
+                email: string
+                name: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    format: email
+                    example: string
+                  name:
+                    type: string
+                    minLength: 1
+                    maxLength: 120
+                    example: string
+                required:
+                  - email
+                  - name
+                additionalProperties: false
+                example:
+                  email: string
+                  name: string

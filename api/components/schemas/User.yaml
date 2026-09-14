@@ -1,0 +1,23 @@
+User:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+    email:
+      type: string
+      format: email
+      example: ada@example.com
+    name:
+      type: string
+      example: Ada Lovelace
+  required:
+    - id
+    - email
+    - name
+  additionalProperties: false
+  example:
+    id: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+    email: ada@example.com
+    name: Ada Lovelace

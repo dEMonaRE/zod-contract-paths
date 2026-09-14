@@ -1,0 +1,19 @@
+UserInput:
+  type: object
+  properties:
+    email:
+      type: string
+      format: email
+      example: string
+    name:
+      type: string
+      minLength: 1
+      maxLength: 120
+      example: string
+  required:
+    - email
+    - name
+  additionalProperties: false
+  example:
+    email: string
+    name: string
