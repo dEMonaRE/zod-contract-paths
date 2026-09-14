@@ -1,9 +1,34 @@
 {
   "name": "@aemrezorlu/zod-contract-paths",
-  "version": "0.2.0",
-  "description": "File-based routing → OpenAPI paths for zod-contract. Skeleton.",
+  "version": "0.2.1",
+  "description": "File-based routing → OpenAPI paths plugin for zod-contract.",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "license": "MIT",
+  "keywords": [
+    "zod",
+    "openapi",
+    "routing",
+    "paths",
+    "file-based-routing",
+    "typescript",
+    "zod-contract"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dEMonaRE/zod-contract-paths.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dEMonaRE/zod-contract-paths/issues"
+  },
+  "homepage": "https://github.com/dEMonaRE/zod-contract-paths#readme",
   "files": [
     "dist",
     "README.md",
@@ -19,7 +44,7 @@
     "yaml": "^2.6.0"
   },
   "peerDependencies": {
-    "@aemrezorlu/zod-contract": "^0.1.0",
+    "@aemrezorlu/zod-contract": "^0.2.0",
     "zod": "^3.23.0"
   },
   "devDependencies": {

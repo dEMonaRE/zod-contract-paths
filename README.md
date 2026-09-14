@@ -2,7 +2,7 @@
 
 File-based routing → OpenAPI paths, as a plugin for [`zod-contract`](https://www.npmjs.com/package/@aemrezorlu/zod-contract).
 
-Skeleton v1 — supports the minimum that demonstrates the convention. Bigger features (auth, tags, multi-status responses) belong in later versions.
+v0.2.x — supports the minimum that demonstrates the convention. Bigger features (auth, tags, multi-status responses) belong in later versions.
 
 ## Convention
 
@@ -52,7 +52,7 @@ await build({
 
 ## Output
 
-A single `paths.yaml` is added to the build outputs, in standard OpenAPI 3.1 shape:
+A single `paths.yaml` is added to the build outputs, in standard OpenAPI 3.x shape:
 
 ```yaml
 paths:
