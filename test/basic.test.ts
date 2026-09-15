@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { parse as parseYaml } from 'yaml'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import * as os from 'node:os'
@@ -23,6 +24,10 @@ describe('pathsPlugin', () => {
 
     const pathsYaml = ctx.outputs.get('paths.yaml')
     expect(pathsYaml).toBeDefined()
+    const parsedPaths = parseYaml(pathsYaml!) as { paths: Record<string, Record<string, { description?: string }>> }
+    expect(parsedPaths.paths['/users'].get.description).toBe(
+      'Returns the user page requested via `limit` and `offset`.',
+    )
     expect(pathsYaml!).toContain('/users:')
     expect(pathsYaml!).toContain('get:')
     expect(pathsYaml!).toContain('post:')

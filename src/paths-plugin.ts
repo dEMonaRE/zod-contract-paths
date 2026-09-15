@@ -70,9 +70,27 @@ async function collectOperations(routesDir: string): Promise<Operation[]> {
     if (!parsed) continue
 
     const mod = jiti(file) as Record<string, unknown>
-    ops.push({ ...parsed, operation: buildOperation(mod, parsed.pathParams) })
+    const overridePath = typeof mod.path === 'string' ? mod.path : null
+    const finalPath = overridePath ?? parsed.path
+    const pathParams = overridePath
+      ? collectPathParamsFromOverride(overridePath)
+      : parsed.pathParams
+    const operation = buildOperation(mod, pathParams)
+    // Tier 1 #3: tag from last non-param folder segment
+    const tags = inferTags(finalPath)
+    if (tags) operation.tags = tags
+    ops.push({ path: finalPath, method: parsed.method, operation })
   }
   return ops
+}
+
+function collectPathParamsFromOverride(p: string): string[] {
+  const out: string[] = []
+  for (const m of p.matchAll(/\{([A-Za-z_][A-Za-z0-9_]*)\}/g)) out.push(m[1]!)
+  for (const m of p.matchAll(/:([A-Za-z_][A-Za-z0-9_]*)/g)) {
+    if (!out.includes(m[1]!)) out.push(m[1]!)
+  }
+  return out
 }
 
 function parseRouteFilename(rel: string): { path: string; method: string; pathParams: string[] } | null {
@@ -95,6 +113,10 @@ function parseRouteFilename(rel: string): { path: string; method: string; pathPa
 function buildOperation(mod: Record<string, unknown>, pathParams: string[]): OpenAPISchema {
   const operation: OpenAPISchema = {}
   const parameters: OpenAPIParameter[] = []
+
+  // Tier 1 #2: surface schema.describe() text on the operation too.
+  const desc = schemaDescription(mod.response) ?? schemaDescription(mod.body) ?? schemaDescription(mod.query)
+  if (desc) operation.description = desc
 
   // Path params first (auto-derived from [name] in filename).
   for (const name of pathParams) {
@@ -143,6 +165,25 @@ interface OpenAPIParameter {
   in: 'path' | 'query' | 'header' | 'cookie'
   required: boolean
   schema: OpenAPISchema
+}
+
+function inferTags(openapiPath: string): string[] | null {
+  const segs = openapiPath.split('/').filter(Boolean)
+  // Need at least one folder segment + filename stem. /admin/users → tag ['admin'].
+  // Skip concrete param placeholders (:id) so /users/:id still counts as `len >= 2`.
+  const stemSegs = segs.filter((s) => !s.startsWith(':'))
+  if (stemSegs.length < 2) return null
+  // Last segment = filename stem; second-to-last = innermost folder = the tag.
+  const folder = stemSegs[stemSegs.length - 2]
+  if (!folder || folder.startsWith(':')) return null
+  return [folder]
+}
+
+function schemaDescription(v: unknown): string | undefined {
+  if (!isZod(v)) return undefined
+  const d = (v as { _def?: { description?: unknown } })._def
+  if (typeof d?.description === 'string' && d.description.length > 0) return d.description
+  return undefined
 }
 
 function shapeToParameters(zodSchema: ZodTypeAny, where: 'path' | 'query'): OpenAPIParameter[] {
