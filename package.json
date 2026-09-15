@@ -1,6 +1,6 @@
 {
   "name": "@aemrezorlu/zod-contract-paths",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "File-based routing → OpenAPI paths plugin for zod-contract.",
   "type": "module",
   "main": "./dist/index.js",
@@ -31,8 +31,7 @@
   "homepage": "https://github.com/dEMonaRE/zod-contract-paths#readme",
   "files": [
     "dist",
-    "README.md",
-    "LICENSE"
+    "README.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -44,7 +43,7 @@
     "yaml": "^2.6.0"
   },
   "peerDependencies": {
-    "@aemrezorlu/zod-contract": "^0.2.0",
+    "@aemrezorlu/zod-contract": "^0.3.0",
     "zod": "^3.23.0"
   },
   "devDependencies": {

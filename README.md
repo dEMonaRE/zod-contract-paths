@@ -2,7 +2,7 @@
 
 File-based routing → OpenAPI paths, as a plugin for [`zod-contract`](https://www.npmjs.com/package/@aemrezorlu/zod-contract).
 
-v0.2.x — supports the minimum that demonstrates the convention. Bigger features (auth, tags, multi-status responses) belong in later versions.
+v0.3.x — interop release tracking `@aemrezorlu/zod-contract` `^0.3.0` (bidirectional refs via `z.lazy()` now supported in core). No new plugin feature in this bump.
 
 ## Convention
 
