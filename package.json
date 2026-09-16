@@ -43,7 +43,7 @@
     "yaml": "^2.6.0"
   },
   "peerDependencies": {
-    "@aemrezorlu/zod-contract": "^0.3.0",
+    "@aemrezorlu/zod-contract": "^0.4.0",
     "zod": "^3.23.0"
   },
   "devDependencies": {
