@@ -2,7 +2,7 @@
 
 File-based routing → OpenAPI paths, as a plugin for [`zod-contract`](https://www.npmjs.com/package/@aemrezorlu/zod-contract).
 
-v0.3.x — interop release tracking `@aemrezorlu/zod-contract` `^0.3.0` (bidirectional refs via `z.lazy()` now supported in core). No new plugin feature in this bump.
+v0.4.x — peer-dep tracks `@aemrezorlu/zod-contract` `^0.4.0`.
 
 ## Convention
 
@@ -22,7 +22,8 @@ import { z } from 'zod'
 
 export const query    = z.object({ limit: z.coerce.number().int() })  // → ?limit=
 export const body     = z.object({...})                                // → request body
-export const response = z.object({...})                                // → 200 response
+export const response = z.object({...}).describe('Returns the user.')  // → 200 response + description
+export const path     = '/v2/users'                                    // → override the convention-derived path
 ```
 
 Path parameters are auto-derived from `[id]` in the filename; they appear as required string params.
@@ -50,14 +51,40 @@ await build({
 })
 ```
 
+## Path override
+
+`export const path = '/v2/users'` in a route file replaces the convention-derived
+OpenAPI path. Useful for API versioning or grouping routes outside the folder
+hierarchy.
+
+## Tag inference
+
+Tags are inferred from the parent folder:
+
+| Route file | Tags |
+|---|---|
+| `users.get.ts` | `["users"]` |
+| `admin/users.get.ts` | `["admin"]` |
+| `admin/legacy/users.get.ts` | `["legacy"]` |
+
+(Two-or-more-stem paths → the second-to-last non-param segment.)
+
+## Description
+
+`Schema.describe('...')` on the response (or query/body) schema is copied to
+`operation.description`. Add docs at the schema level once; they flow into
+the OpenAPI output without per-file annotation.
+
 ## Output
 
 A single `paths.yaml` is added to the build outputs, in standard OpenAPI 3.x shape:
 
 ```yaml
 paths:
-  /users:
+  /v2/users:
     get:
+      tags: [users]
+      description: Returns the user.
       parameters:
         - name: limit
           in: query
@@ -68,10 +95,12 @@ paths:
             application/json:
               schema: { type: object, ... }
     post:
+      tags: [users]
       requestBody: { ... }
       responses: { '200': { ... } }
   /users/:id:
     get:
+      tags: [users]
       parameters:
         - name: id
           in: path
@@ -88,11 +117,8 @@ paths:
 
 ## Out of scope for this skeleton
 
-- Tags / descriptions / operation metadata beyond schema
-- Auth / security schemes
+- Auth / security schemes — use [`@aemrezorlu/zod-contract-auth`](https://www.npmjs.com/package/@aemrezorlu/zod-contract-auth)
 - Multiple response statuses (`responses: { 200, 401, 404 }`)
-- Path overrides (`export const path = '/v2/users'`)
-- Nested routes deeper than `[id]/orders.get.ts` (works in v1 but untested)
 
 ## License
 
